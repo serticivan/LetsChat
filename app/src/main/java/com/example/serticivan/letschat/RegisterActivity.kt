@@ -17,6 +17,10 @@ import java.util.*
 
 class RegisterActivity : AppCompatActivity() {
 
+    companion object {
+        val TAG = "RegisterActivity"
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
@@ -26,7 +30,7 @@ class RegisterActivity : AppCompatActivity() {
         }
 
         selectphoto_button_register.setOnClickListener {
-            Log.d("RegisterActivity","try to show photo selector")
+            Log.d(TAG,"try to show photo selector")
 
             val intent = Intent(Intent.ACTION_PICK)
             intent.type = "image/*"
@@ -34,7 +38,7 @@ class RegisterActivity : AppCompatActivity() {
         }
 
         already_have_account_text_view.setOnClickListener {
-            Log.d("RegisterActivity", "try to open login activity")
+            Log.d(TAG, "try to open login activity")
             //launch the login activity
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
@@ -47,7 +51,7 @@ class RegisterActivity : AppCompatActivity() {
 
         if (requestCode == 0 && resultCode == Activity.RESULT_OK && data != null) {
             //proceed and check what the selected image was
-            Log.d("RegisterActivity", "Photo was selected")
+            Log.d(TAG, "Photo was selected")
 
             selectedPhotoUri = data.data
 
@@ -68,8 +72,8 @@ class RegisterActivity : AppCompatActivity() {
         val email = email_edittext_register.text.toString()
         val password = password_edittext_register.text.toString()
 
-        Log.d("RegisterActivity", "email is $email")
-        Log.d("RegisterActivity", "password: $password")
+        Log.d(TAG, "email is $email")
+        Log.d(TAG, "password: $password")
 
         if (email.isEmpty() || password.isEmpty()) {
             Toast.makeText(this, "Please enter text in email/pw", Toast.LENGTH_SHORT).show()
@@ -83,13 +87,13 @@ class RegisterActivity : AppCompatActivity() {
                 if (!it.isSuccessful) return@addOnCompleteListener
 
                 //else if successful
-                Log.d("Main", "User successfully created (uid: ${it.result?.user?.uid})")
+                Log.d(TAG, "User successfully created (uid: ${it.result?.user?.uid})")
 
                 uploadImageToFirebaseStorage()
 
             }
             .addOnFailureListener {
-                Log.d("Main", "Failed to create user: ${it.message}")
+                Log.d(TAG, "Failed to create user: ${it.message}")
                 Toast.makeText(this, "Failed to create user: ${it.message}", Toast.LENGTH_SHORT).show()
 
             }
@@ -105,10 +109,10 @@ class RegisterActivity : AppCompatActivity() {
 
         ref.putFile(selectedPhotoUri!!)
             .addOnSuccessListener {
-                Log.d("RegisterActivity", "Successfully uploaded image: ${it.metadata?.path}")
+                Log.d(TAG, "Successfully uploaded image: ${it.metadata?.path}")
 
                 ref.downloadUrl.addOnSuccessListener {
-                    Log.d("RegisterActivity","File location $it")
+                    Log.d(TAG,"File location $it")
 
                     saveUserToFirebaseDatabase(it.toString())
                 }
@@ -125,8 +129,17 @@ class RegisterActivity : AppCompatActivity() {
 
         ref.setValue(user)
             .addOnSuccessListener {
-                Log.d("RegisterActivity", "Finally we saved the user to Firebase Database")
+                Log.d(TAG, "Finally we saved the user to Firebase Database")
+
+                val intent = Intent(this, LatestMessagesActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(intent)
             }
+            .addOnFailureListener {
+                Log.d(TAG, "Failed to set value to database: ${it.message}")
+            }
+
+
 
 
 
