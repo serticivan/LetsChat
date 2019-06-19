@@ -30,6 +30,8 @@ class LatestMessagesActivity : AppCompatActivity() {
 
         when (item?.itemId) {
             R.id.menu_new_messages -> {
+                val intent = Intent(this, NewMessageActivity::class.java)
+                startActivity(intent)
 
             }
             R.id.menu_sign_out -> {
