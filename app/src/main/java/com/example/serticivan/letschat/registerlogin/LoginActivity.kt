@@ -1,9 +1,9 @@
-package com.example.serticivan.letschat
+package com.example.serticivan.letschat.registerlogin
 
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import com.example.serticivan.letschat.R
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_login.*
 

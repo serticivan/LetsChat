@@ -1,8 +1,11 @@
-package com.example.serticivan.letschat
+package com.example.serticivan.letschat.messages
 
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import com.example.serticivan.letschat.R
+import com.example.serticivan.letschat.models.User
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -45,6 +48,13 @@ class NewMessageActivity : AppCompatActivity() {
                     if (user != null){
                         adapter.add(UserItem(user))
                     }
+                }
+
+                adapter.setOnItemClickListener { item, view ->
+                    val intent = Intent(view.context, ChatLogActivity::class.java)
+                    startActivity(intent)
+
+                    finish()
                 }
 
                 recyclerview_newmessage.adapter = adapter
