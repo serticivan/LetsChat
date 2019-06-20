@@ -3,15 +3,19 @@ package com.example.serticivan.letschat.messages
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.widget.DividerItemDecoration
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import com.example.serticivan.letschat.R
+import com.example.serticivan.letschat.messages.NewMessageActivity.Companion.USER_KEY
 import com.example.serticivan.letschat.models.ChatMessage
 import com.example.serticivan.letschat.models.User
 import com.example.serticivan.letschat.registerlogin.RegisterActivity
+import com.example.serticivan.letschat.views.LatestMessageRow
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import com.squareup.picasso.Picasso
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Item
 import com.xwray.groupie.ViewHolder
@@ -22,6 +26,7 @@ class LatestMessagesActivity : AppCompatActivity() {
 
     companion object {
         var currentUser: User? = null
+        var TAG = "LatestMessagesActivity"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,6 +34,16 @@ class LatestMessagesActivity : AppCompatActivity() {
         setContentView(R.layout.activity_latest_messages)
 
         recyclerview_latest_messages.adapter = adapter
+        recyclerview_latest_messages.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
+
+        //set item click listener on tour adapter
+        adapter.setOnItemClickListener { item, view ->
+            Log.d(TAG, "123")
+            val intent = Intent(this,ChatLogActivity::class.java)
+            val row = item as LatestMessageRow
+            intent.putExtra(NewMessageActivity.USER_KEY, row.chatPartnerUser)
+            startActivity(intent)
+        }
 
 
 //        setupDummyRows()
@@ -77,17 +92,6 @@ class LatestMessagesActivity : AppCompatActivity() {
         })
     }
 
-    class LatestMessageRow(val chatMessage: ChatMessage): Item<ViewHolder>() {
-        override fun getLayout(): Int {
-            return R.layout.latest_message_row
-        }
-
-        override fun bind(viewHolder: ViewHolder, position: Int) {
-            viewHolder.itemView.message_textview_latest_message.text = chatMessage.text
-
-        }
-
-    }
 
     val adapter = GroupAdapter<ViewHolder>()
 
